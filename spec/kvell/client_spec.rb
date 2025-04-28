@@ -159,7 +159,7 @@ RSpec.describe Kvell::Client do
         }
       end
 
-      it { expect(result).to have_attributes(data_expected) }
+      it { is_expected.to have_attributes(data_expected) }
     end
 
     context 'with invalid data' do
@@ -203,7 +203,7 @@ RSpec.describe Kvell::Client do
           }
         end
 
-        it { expect(result).to have_attributes(data_expected) }
+        it { is_expected.to have_attributes(data_expected) }
       end
 
       context 'when fio is mismatched' do
@@ -220,7 +220,7 @@ RSpec.describe Kvell::Client do
           }
         end
 
-        it { expect(result).to have_attributes(data_expected) }
+        it { is_expected.to have_attributes(data_expected) }
       end
 
       context 'when bank is not available' do
@@ -237,7 +237,7 @@ RSpec.describe Kvell::Client do
           }
         end
 
-        it { expect(result).to have_attributes(data_expected) }
+        it { is_expected.to have_attributes(data_expected) }
       end
     end
   end
