@@ -1,0 +1,46 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.pay.stage.kvell.group/v1/orders/payout/sbp/check/status/6ed9e6fb-7618-4b38-9121-8262c7d1c407
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v2.13.1
+      X-Api-Key:
+      - <%= api_key %>
+      X-Signature:
+      - <%= signature %>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Mon, 28 Apr 2025 16:40:25 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '139'
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - 4ef63dbf-e765-4bc3-b3dc-fdb95705e820
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJzdGF0dXMiOiJlcnJvciIsImZpb19uc3BrIjoiIiwibnNwa19pZCI6IiIsImVycm9yX21lc3NhZ2UiOiLQntGI0LjQsdC60LAg0LvQvtCz0LjQutC4INCyINCh0JHQnzog0J3QtSDQvdCw0LnQtNC10L0g0J/QvtC70YPRh9Cw0YLQtdC70YwifQ==
+  recorded_at: Mon, 28 Apr 2025 16:40:25 GMT
+recorded_with: VCR 6.3.1

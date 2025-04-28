@@ -1,0 +1,43 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.pay.stage.kvell.group/v1/orders/payout/sbp/check/status/57bc37bf-cf78-4393-98e1-67fa4fa801db
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v2.13.1
+      X-Signature:
+      - <%= signature %>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 422
+      message: Unprocessable Entity
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Mon, 28 Apr 2025 16:38:10 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '65'
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - 7420428c-3806-47c6-aa97-3c95697798e3
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: UTF-8
+      string: '{"errors":[{"code":20098,"message":"x-api-key: Field required"}]}'
+  recorded_at: Mon, 28 Apr 2025 16:38:10 GMT
+recorded_with: VCR 6.3.1
