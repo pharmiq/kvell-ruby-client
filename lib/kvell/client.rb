@@ -27,7 +27,7 @@ module Kvell
       end
     end
 
-    # @param [Kvell::Requests::CheckPaymentPossibility] params
+    # @param params [Kvell::Requests::CheckPaymentPossibility] params
     #
     # @return [Kvell::Responses::CheckPaymentPossibility]
     #
