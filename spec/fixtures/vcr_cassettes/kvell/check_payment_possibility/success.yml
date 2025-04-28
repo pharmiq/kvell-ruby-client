@@ -1,0 +1,46 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.pay.stage.kvell.group/v1/orders/payout/sbp/check
+    body:
+      encoding: UTF-8
+      string: '{"amount":100,"phone":"79225620146","bank_id":"100000000111","fio":"Магомедов
+        Ахмед Шамилевич","fio_check":true}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v2.13.1
+      X-Api-Key:
+      - <%= api_key %>
+      X-Signature:
+      - <%= signature %>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Mon, 28 Apr 2025 15:59:46 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '53'
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - d58b4f0c-918f-4405-9ce3-3cc8a08d5fd8
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: UTF-8
+      string: '{"request_id":"8dcb02c9-a5f5-476a-86f8-d5eacaf313bf"}'
+  recorded_at: Mon, 28 Apr 2025 15:59:46 GMT
+recorded_with: VCR 6.3.1
