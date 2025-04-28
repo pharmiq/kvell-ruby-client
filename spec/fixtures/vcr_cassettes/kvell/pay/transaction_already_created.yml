@@ -1,0 +1,48 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.pay.stage.kvell.group/v1/orders/payout/sbp
+    body:
+      encoding: UTF-8
+      string: '{"amount":100,"phone":"79991234567","bank_id":"100000000111","fio":"Иванов
+        Иван Иванович","transaction":"418e6125-6fb6-47d8-83e6-e0bc3ae567c2","description":"Выплата
+        по заявке 1234","customer":"79991234567"}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v2.13.1
+      X-Api-Key:
+      - <%= api_key %>
+      X-Signature:
+      - <%= signature %>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Mon, 28 Apr 2025 17:24:52 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '96'
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - 1f352ea7-5501-40b7-8b25-fc1a6ed730a7
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJlcnJvcnMiOlt7ImNvZGUiOjIwMDA3LCJtZXNzYWdlIjoi0KLRgNCw0L3Qt9Cw0LrRhtC40Y8g0YHQvtCy0LXRgNGI0LDQu9Cw0YHRjCDQv9GA0LXQttC00LUifV19
+  recorded_at: Mon, 28 Apr 2025 17:24:52 GMT
+recorded_with: VCR 6.3.1
