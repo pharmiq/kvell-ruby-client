@@ -4,7 +4,7 @@ module Kvell
   class Client
     module Models
       module Responses
-        class Bank < Base
+        class FetchBanks < Base
           property :bank_id
           property :bank_bic
           property :name

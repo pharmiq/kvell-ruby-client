@@ -22,8 +22,18 @@ module Kvell
       response = http_get(FETCH_BANKS_PATH, headers: { 'X-Api-Key' => api_key })
 
       JSON.parse(response.body).map do |bank_data|
-        Responses::Bank.new(bank_data)
+        Responses::FetchBanks.new(bank_data)
       end
+    end
+
+    # @param [Hash] params
+    #
+    # @return [Kvell::Responses::CheckPaymentPossibility]
+    #
+    def check_payment_possibility(**params)
+      response = http_post(CHECK_PAYMENT_POSSIBILITY_PATH, headers: { 'X-Api-Key' => api_key }, params: params)
+
+      JSON.parse(response.body)
     end
 
     private
