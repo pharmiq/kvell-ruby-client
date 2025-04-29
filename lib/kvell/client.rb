@@ -9,6 +9,7 @@ module Kvell
     FETCH_BANKS_PATH = '/v1/collections/banks'
     CHECK_PAYMENT_POSSIBILITY_PATH = '/v1/orders/payout/sbp/check'
     CHECK_PAYMENT_POSSIBILITY_STATUS_PATH = '/v1/orders/payout/sbp/check/status'
+    PAY_PATH = '/v1/orders/payout/sbp'
 
     def initialize(options = {})
       CONFIGURATION_OPTIONS.each do |attribute|
@@ -35,7 +36,7 @@ module Kvell
     def check_payment_possibility(params)
       headers = {
         'X-Api-Key' => api_key,
-        'X-Signature' => signature_header(params.slice(:phone, :bank_id)),
+        'X-Signature' => signature_header({ phone: params.phone, bank_id: params.bank_id }),
       }
       response = http_post(
         CHECK_PAYMENT_POSSIBILITY_PATH,
@@ -61,6 +62,20 @@ module Kvell
       )
 
       Responses::CheckPaymentPossibilityStatus.new(JSON.parse(response.body))
+    end
+
+    # @param params [Kvell::Requests::Pay]
+    #
+    # @return [Kvell::Responses::Pay]
+    #
+    def pay(params)
+      headers = {
+        'X-Api-Key' => api_key,
+        'X-Signature' => payment_signature_header(params),
+      }
+      response = http_post(PAY_PATH, headers: headers, params: params)
+
+      Responses::Pay.new(JSON.parse(response.body))
     end
 
     private
@@ -98,6 +113,10 @@ module Kvell
 
     def signature_header(data)
       Digest::SHA256.hexdigest("#{api_key}#{data.values.join}#{secret_key}")
+    end
+
+    def payment_signature_header(data)
+      Digest::SHA256.hexdigest("#{api_key}#{data.to_json}#{payout_secret_key}")
     end
 
     def http_post(resource, params:, headers: {})

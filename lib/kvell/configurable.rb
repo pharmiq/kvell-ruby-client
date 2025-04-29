@@ -6,6 +6,7 @@ module Kvell
       api_endpoint
       api_key
       secret_key
+      payout_secret_key
       logger
       open_timeout
       read_timeout
