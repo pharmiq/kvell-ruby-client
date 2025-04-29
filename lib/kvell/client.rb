@@ -36,7 +36,7 @@ module Kvell
     def check_payment_possibility(params)
       headers = {
         'X-Api-Key' => api_key,
-        'X-Signature' => signature_header(params.slice(:phone, :bank_id)),
+        'X-Signature' => signature_header({ phone: params.phone, bank_id: params.bank_id }),
       }
       response = http_post(
         CHECK_PAYMENT_POSSIBILITY_PATH,
