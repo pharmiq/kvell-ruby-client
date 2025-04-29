@@ -12,4 +12,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir['app/**/*', 'lib/**/*', 'config/**/*', 'README.md']
   spec.require_paths = ['lib']
   spec.metadata['rubygems_mfa_required'] = 'true'
+
+  spec.add_dependency 'faraday', '~> 2.0'
+  spec.add_dependency 'hashie', '>= 3.4', '< 5.0'
 end
