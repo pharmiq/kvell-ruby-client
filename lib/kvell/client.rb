@@ -10,6 +10,7 @@ module Kvell
     CHECK_PAYMENT_POSSIBILITY_PATH = '/v1/orders/payout/sbp/check'
     CHECK_PAYMENT_POSSIBILITY_STATUS_PATH = '/v1/orders/payout/sbp/check/status'
     PAY_PATH = '/v1/orders/payout/sbp'
+    PAYMENT_ORDER_PATH = '/v1/orders/%<transaction>s/operation-certificate/pdf'
 
     def initialize(options = {})
       CONFIGURATION_OPTIONS.each do |attribute|
@@ -76,6 +77,23 @@ module Kvell
       response = http_post(PAY_PATH, headers: headers, params: params)
 
       Responses::Pay.new(JSON.parse(response.body))
+    end
+
+    # @param transaction [String] номер транзакции, отправленный в pay
+    #
+    # @return [Kvell::Responses::PaymentOrder]
+    #
+    def fetch_payment_order(transaction)
+      headers = {
+        'X-Api-Key' => api_key,
+        'X-Signature' => signature_header(transaction: transaction),
+      }
+      response = http_get(
+        format(PAYMENT_ORDER_PATH, transaction: transaction),
+        headers: headers,
+      )
+
+      Responses::PaymentOrder.new(JSON.parse(response.body))
     end
 
     private

@@ -1,0 +1,43 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.pay.stage.kvell.group/v1/orders/418e6125-6fb6-47d8-83e6-e0bc3ae567c2/operation-certificate/pdf
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v2.13.1
+      X-Signature:
+      - <%= signature %>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 422
+      message: Unprocessable Entity
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Thu, 23 Apr 2026 14:06:46 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '65'
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - 693b1c49-db35-4772-8b49-61b5e85de951
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: UTF-8
+      string: '{"errors":[{"code":20098,"message":"x-api-key: Field required"}]}'
+  recorded_at: Thu, 23 Apr 2026 14:06:46 GMT
+recorded_with: VCR 6.3.1

@@ -395,4 +395,68 @@ RSpec.describe Kvell::Client do
       # end
     end
   end
+
+  describe '#fetch_payment_order' do
+    subject(:result) do
+      VCR.use_cassette("kvell/fetch_payment_order/#{cassette}", erb: erb) do
+        client.fetch_payment_order(transaction)
+      end
+    end
+
+    let(:erb) do
+      {
+        api_key: api_key,
+        signature: Digest::SHA256.hexdigest("#{api_key}#{transaction}#{secret_key}"),
+      }
+    end
+
+    let(:transaction) { '418e6125-6fb6-47d8-83e6-e0bc3ae567c2' }
+
+    context 'with valid data' do
+      let(:cassette) { 'success' }
+
+      it { is_expected.to have_attributes(file_url: 'https://api.pay.stage.kvell.group/certificates/418e6125.pdf') }
+    end
+
+    context 'with invalid data' do
+      context 'when api_key is nil' do
+        let(:cassette) { 'empty_api_key' }
+
+        let(:api_key) { nil }
+
+        it {
+          expect do
+            subject
+          end.to raise_exception Faraday::UnprocessableEntityError,
+                                 'the server responded with status 422'
+        }
+      end
+
+      context 'when api_key is invalid' do
+        let(:cassette) { 'invalid_api_key' }
+
+        let(:api_key) { 'invalid_api_key' }
+
+        it {
+          expect do
+            subject
+          end.to raise_exception Faraday::UnprocessableEntityError,
+                                 'the server responded with status 422'
+        }
+      end
+
+      context 'when transaction is unknown' do
+        let(:cassette) { 'unknown_transaction' }
+
+        let(:transaction) { '78f35836-1d23-4567-8caa-2f0fbf0557a8' }
+
+        it {
+          expect do
+            subject
+          end.to raise_exception Faraday::ServerError,
+                                 'the server responded with status 500'
+        }
+      end
+    end
+  end
 end
