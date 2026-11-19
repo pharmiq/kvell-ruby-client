@@ -10,6 +10,7 @@ require_relative 'models/responses/fetch_banks'
 require_relative 'models/responses/check_payment_possibility_status'
 require_relative 'models/responses/pay'
 require_relative 'models/responses/payment_order'
+require_relative 'models/responses/order'
 
 module Kvell
   Requests = Client::Models::Requests
