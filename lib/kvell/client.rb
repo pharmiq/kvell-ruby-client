@@ -11,6 +11,7 @@ module Kvell
     CHECK_PAYMENT_POSSIBILITY_STATUS_PATH = '/v1/orders/payout/sbp/check/status'
     PAY_PATH = '/v1/orders/payout/sbp'
     PAYMENT_ORDER_PATH = '/v1/orders/%<transaction>s/operation-certificate/pdf'
+    ORDER_PATH = '/v1/orders/%<transaction>s'
 
     def initialize(options = {})
       CONFIGURATION_OPTIONS.each do |attribute|
@@ -84,19 +85,33 @@ module Kvell
     # @return [Kvell::Responses::PaymentOrder]
     #
     def fetch_payment_order(transaction)
-      headers = {
-        'X-Api-Key' => api_key,
-        'X-Signature' => signature_header(transaction: transaction),
-      }
-      response = http_get(
-        format(PAYMENT_ORDER_PATH, transaction: transaction),
-        headers: headers,
-      )
+      Responses::PaymentOrder.new(get_by_transaction(PAYMENT_ORDER_PATH, transaction))
+    end
 
-      Responses::PaymentOrder.new(JSON.parse(response.body))
+    # Состояние операции по номеру транзакции. Ответ pay не означает, что выплата выполнена: Kvell
+    # обрабатывает её асинхронно, итог (completed или canceled) нужно получать этим запросом.
+    #
+    # @param transaction [String] номер транзакции, отправленный в pay
+    #
+    # @return [Kvell::Responses::Order]
+    #
+    # @raise [Faraday::ResourceNotFound] операции с таким номером в Kvell нет
+    #
+    def fetch_order(transaction)
+      Responses::Order.new(get_by_transaction(ORDER_PATH, transaction))
     end
 
     private
+
+    # GET-запрос, подписанный номером транзакции
+    #
+    # @return [Hash] разобранное тело ответа
+    #
+    def get_by_transaction(path, id)
+      headers = { 'X-Api-Key' => api_key, 'X-Signature' => signature_header(transaction: id) }
+
+      JSON.parse(http_get(format(path, transaction: id), headers: headers).body)
+    end
 
     def connection
       @connection ||= Faraday.new(url: api_endpoint) do |connection|

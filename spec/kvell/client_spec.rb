@@ -459,4 +459,83 @@ RSpec.describe Kvell::Client do
       end
     end
   end
+
+  # The cassettes repeat the production responses of 19.11.2026 (GET /v1/orders/{transaction}
+  # for completed and canceled SBP payouts and for an unknown transaction) with invented
+  # identifiers and recipient data. The `processing` body is the same response with the status
+  # of the payout request example of the Kvell documentation.
+  describe '#fetch_order' do
+    subject(:result) do
+      VCR.use_cassette("kvell/fetch_order/#{cassette}", erb: erb) do
+        client.fetch_order(transaction)
+      end
+    end
+
+    let(:erb) do
+      {
+        api_key: api_key,
+        signature: Digest::SHA256.hexdigest("#{api_key}#{transaction}#{secret_key}"),
+      }
+    end
+
+    let(:transaction) { '418e6125-6fb6-47d8-83e6-e0bc3ae567c2' }
+    let(:flags) { [result.completed?, result.canceled?, result.in_progress?] }
+
+    context 'when the payout is completed' do
+      let(:cassette) { 'completed' }
+
+      it 'returns the completed order' do
+        expect(result).to have_attributes(
+          id: '0d6f2a1e-5b7c-4e8a-9f10-2b3c4d5e6f70', status: 'completed',
+          transaction: transaction, amount: 121_702, commission: 0,
+          description: 'Выплата по заявке 18046', ecommerce_type: 'payout',
+          error_code: nil, error_message: nil, created_at: '2026-11-19T05:39:58.466911Z'
+        )
+        expect(flags).to eq [true, false, false]
+      end
+    end
+
+    context 'when the payout is still processed' do
+      let(:cassette) { 'processing' }
+
+      it 'returns the order in progress' do
+        expect(result).to have_attributes(status: 'processing', error_code: nil)
+        expect(flags).to eq [false, false, true]
+      end
+    end
+
+    context 'when the payout is canceled' do
+      let(:cassette) { 'canceled' }
+
+      it 'returns the canceled order with the reason' do
+        expect(result).to have_attributes(
+          status: 'canceled', amount: 30_680, error_code: 'error-sbp-fio',
+          error_message: 'У получателя нет расчетного счета в этом банке. ФИО некорректное'
+        )
+        expect(flags).to eq [false, true, false]
+      end
+    end
+
+    context 'when the payout is canceled without a reason' do
+      let(:cassette) { 'canceled_without_reason' }
+
+      it 'returns the canceled order with an empty reason' do
+        expect(result).to have_attributes(status: 'canceled', error_code: nil, error_message: nil)
+        expect(flags).to eq [false, true, false]
+      end
+    end
+
+    context 'when transaction is unknown' do
+      let(:cassette) { 'unknown_transaction' }
+
+      let(:transaction) { '78f35836-1d23-4567-8caa-2f0fbf0557a8' }
+
+      it {
+        expect do
+          subject
+        end.to raise_exception Faraday::ResourceNotFound,
+                               'the server responded with status 404'
+      }
+    end
+  end
 end
